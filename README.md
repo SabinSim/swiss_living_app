@@ -51,7 +51,7 @@ It includes real-time exchange rates, cost breakdown charts, and a fully automat
 ---
 
 ## 🖥️ Demo (Streamlit Cloud)  
-👉 `[https://sabinsim-swiss-living-app-swiss-living-app-fy0hql.streamlit.app/]`
+👉 https://sabinsim-swiss-living-app-swiss-living-app-fy0hql.streamlit.app/
 
 ---
 
