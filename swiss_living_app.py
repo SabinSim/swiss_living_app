@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 from fpdf import FPDF
 import tempfile
@@ -172,11 +172,14 @@ if st.button("📄 Download PDF Summary"):
     pdf.cell(200, 10, txt=f"KRW: ₩ {krw_value:,.0f}", ln=True)
 
     # Pie Chart Image
-    fig_pie = px.pie(
-        df_total,
-        names="Category",
-        values="Amount",
-        color_discrete_sequence=px.colors.qualitative.Set2
+    fig_pie = go.Figure(
+        data=[
+            go.Pie(
+                labels=df_total["Category"],
+                values=df_total["Amount"],
+                marker=dict(colors=["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"])
+            )
+        ]
     )
 
     fig_pie.update_layout(
@@ -198,13 +201,16 @@ if st.button("📄 Download PDF Summary"):
     pdf.cell(200, 10, txt="Category – Bar Chart", ln=True)
     pdf.ln(5)
 
-    fig_bar = px.bar(
-        df_total,
-        x="Category",
-        y="Amount",
-        color="Category",
-        color_discrete_sequence=px.colors.qualitative.Set2
+    fig_bar = go.Figure(
+        data=[
+            go.Bar(
+                x=df_total["Category"],
+                y=df_total["Amount"],
+                marker_color=["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"]
+            )
+        ]
     )
+
 
     fig_bar.update_layout(
         paper_bgcolor="white",
