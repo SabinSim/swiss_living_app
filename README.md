@@ -142,6 +142,6 @@ fpdf2
 
 ## ❤️ Author  
 **Sabin Sim**  
-Junior Python Developer in Switzerland  
+Junior Developer in Switzerland  
 Building practical tools for everyday life.
 
