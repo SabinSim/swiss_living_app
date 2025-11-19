@@ -1,6 +1,6 @@
 streamlit
 requests
-plotly
-kaleido
+plotly==5.9.0
+kaleido==0.2.1
 fpdf2
 pandas
