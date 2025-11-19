@@ -14,7 +14,7 @@ if "fixed" not in st.session_state:
 if "variable" not in st.session_state:
     st.session_state.variable = {}
 
-# 1) Fetch exchange rates
+# Fetch exchange rates
 def get_rates():
     url = "https://open.er-api.com/v6/latest/CHF"
     response = requests.get(url)
@@ -31,8 +31,7 @@ def get_rates():
         "KRW": rates["KRW"]
     }
 
-
-# 2) Categories
+# Categories
 fixed_cost_categories = [
     "Rent",
     "Insurance",
@@ -70,7 +69,6 @@ if menu == "Fixed Costs":
 
     st.write("Your fixed costs:", st.session_state.fixed)
 
-
 # ======================
 # Variable Costs
 # ======================
@@ -85,14 +83,12 @@ elif menu == "Variable Costs":
 
     st.write("Your variable costs:", st.session_state.variable)
 
-
 # ======================
 # Summary
 # ======================
 elif menu == "Summary":
     st.subheader("📊 Monthly Summary")
 
-    # Total calculation
     total_fixed = sum(st.session_state.fixed.values())
     total_variable = sum(st.session_state.variable.values())
     grand_total = total_fixed + total_variable
@@ -101,7 +97,7 @@ elif menu == "Summary":
     st.write(f"**Total Variable Costs:** {total_variable:.2f} CHF")
     st.write(f"### 💰 Total Monthly Living Cost: {grand_total:.2f} CHF")
 
-    # Combined data for charts
+    # Prepare chart data
     total_data = {}
     for k, v in st.session_state.fixed.items():
         if v > 0:
@@ -111,7 +107,6 @@ elif menu == "Summary":
         if v > 0:
             total_data[k] = v
 
-    # Charts
     if total_data:
         df_total = pd.DataFrame({
             "Category": list(total_data.keys()),
@@ -121,14 +116,32 @@ elif menu == "Summary":
         st.write("### Spending Breakdown")
         st.dataframe(df_total)
 
+        # PLOTLY graph_objects PIE CHART
+        pie_colors = ["#66c2a5", "#fc8d62", "#8da0cb",
+                      "#e78ac3", "#a6d854", "#ffd92f"]
+
+        fig_pie = go.Figure(
+            data=[go.Pie(
+                labels=df_total["Category"],
+                values=df_total["Amount"],
+                marker=dict(colors=pie_colors)
+            )]
+        )
+
         st.write("### 📘 Pie Chart")
-        st.plotly_chart(
-            px.pie(df_total, names="Category", values="Amount"),
-            use_container_width=True
+        st.plotly_chart(fig_pie, use_container_width=True)
+
+        # PLOTLY graph_objects BAR CHART
+        fig_bar = go.Figure(
+            data=[go.Bar(
+                x=df_total["Category"],
+                y=df_total["Amount"],
+                marker_color=pie_colors
+            )]
         )
 
         st.write("### 📗 Bar Chart")
-        st.bar_chart(df_total.set_index("Category")["Amount"])
+        st.plotly_chart(fig_bar, use_container_width=True)
 
     # Currency Conversion
     st.write("### 🌍 Currency Conversion")
@@ -147,12 +160,15 @@ elif menu == "Summary":
         st.warning("⚠ Unable to load exchange rate data.")
 
 
-# ===== PDF Export Button =====
+# ======================
+# PDF EXPORT
+# ======================
+
 if st.button("📄 Download PDF Summary"):
     pdf = FPDF()
     pdf.add_page()
 
-    # Universal font that exists on Streamlit Cloud
+    # Universal Linux-safe font
     font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     pdf.add_font("DejaVu", "", font_path, uni=True)
     pdf.set_font("DejaVu", size=12)
@@ -165,66 +181,30 @@ if st.button("📄 Download PDF Summary"):
     pdf.cell(200, 10, txt=f"Total Monthly Living Cost: {grand_total:.2f} CHF", ln=True)
     pdf.ln(10)
 
-    # Currency conversion in PDF
     pdf.cell(200, 10, txt="Currency Conversion:", ln=True)
     pdf.cell(200, 10, txt=f"EUR: € {eur_value:,.2f}", ln=True)
     pdf.cell(200, 10, txt=f"USD: $ {usd_value:,.2f}", ln=True)
     pdf.cell(200, 10, txt=f"KRW: ₩ {krw_value:,.0f}", ln=True)
 
-    # Pie Chart Image
-    fig_pie = go.Figure(
-        data=[
-            go.Pie(
-                labels=df_total["Category"],
-                values=df_total["Amount"],
-                marker=dict(colors=["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"])
-            )
-        ]
-    )
-
-    fig_pie.update_layout(
-        paper_bgcolor="white",
-        plot_bgcolor="white",
-        width=700,
-        height=500,
-    )
-
+    # Export charts to images
+    # Save Pie Chart
     pie_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
     fig_pie.write_image(pie_path, scale=2)
 
     pdf.ln(10)
     pdf.image(pie_path, x=15, y=pdf.get_y(), w=170)
 
-    # ===== Page 2 =====
+    # Page 2
     pdf.add_page()
-    pdf.set_font("AppleSD", size=14)
+    pdf.set_font("DejaVu", size=14)
     pdf.cell(200, 10, txt="Category – Bar Chart", ln=True)
     pdf.ln(5)
-
-    fig_bar = go.Figure(
-        data=[
-            go.Bar(
-                x=df_total["Category"],
-                y=df_total["Amount"],
-                marker_color=["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"]
-            )
-        ]
-    )
-
-
-    fig_bar.update_layout(
-        paper_bgcolor="white",
-        plot_bgcolor="white",
-        width=700,
-        height=500,
-    )
 
     bar_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
     fig_bar.write_image(bar_path, scale=2)
 
     pdf.image(bar_path, x=15, y=pdf.get_y(), w=170)
 
-    # Save PDF
     temp_pdf = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
     pdf.output(temp_pdf.name)
 
@@ -237,6 +217,6 @@ if st.button("📄 Download PDF Summary"):
         )
 
 
-# Test
 if __name__ == "__main__":
     print(get_rates())
+
