@@ -152,8 +152,10 @@ if st.button("📄 Download PDF Summary"):
     pdf = FPDF()
     pdf.add_page()
 
-    pdf.add_font("AppleSD", "", "/System/Library/Fonts/AppleSDGothicNeo.ttc", uni=True)
-    pdf.set_font("AppleSD", size=12)
+    # Universal font that exists on Streamlit Cloud
+    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    pdf.add_font("DejaVu", "", font_path, uni=True)
+    pdf.set_font("DejaVu", size=12)
 
     pdf.cell(200, 10, txt="Swiss Living Cost Summary", ln=True)
     pdf.ln(5)
