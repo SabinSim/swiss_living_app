@@ -126,7 +126,7 @@ streamlit run swiss_living_app.py
 ---
 
 ## 📄 requirements.txt  
-(필수 라이브러리 목록 예시)
+
 
 ```
 
