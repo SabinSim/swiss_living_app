@@ -3,6 +3,9 @@
 **A complete Swiss living-cost analysis tool built with Streamlit, Plotly, and real-time currency API.**  
 Automatically calculates monthly living cost, visualizes spending structure, and exports results as a multi-page PDF.
 
+<img width="1910" height="915" alt="image" src="https://github.com/user-attachments/assets/4477e004-95ff-479e-8797-ade9e38a03da" />
+
+
 ---
 
 ## 🔥 Overview  
@@ -37,17 +40,19 @@ It includes real-time exchange rates, cost breakdown charts, and a fully automat
 - Total monthly living cost (CHF)  
 - Currency conversion summary  
 
+
 ### ✔ 5. Data Visualization  
 - **Pie Chart** for spending structure  
 - **Bar Chart** for category comparison  
 - High-resolution Plotly images  
+<img width="1912" height="924" alt="image" src="https://github.com/user-attachments/assets/1b13c503-3a74-4f2a-8b2f-291381241682" />
 
 ### ✔ 6. PDF Export (Multi-Page)  
 - Page 1: Summary + Pie Chart  
 - Page 2: Bar Chart  
 - Unicode-safe Apple font  
 - Ready for printing or sharing  
-
+<img width="1911" height="916" alt="image" src="https://github.com/user-attachments/assets/664df1fc-93e1-4e9f-b644-4856a978ae08" />
 ---
 
 ## 🖥️ Demo (Streamlit Cloud)  
